@@ -19,4 +19,12 @@ private String subject="";
 
         mailSender.send(message);
     }
+
+    public void sendPasswordResetEmail(String email, String resetToken) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Password Reset");
+        message.setText("To reset your password, click on the following link: http://localhost:4200/reset-password?token=" + resetToken);
+        mailSender.send(message);
+    }
 }

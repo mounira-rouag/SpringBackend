@@ -2,6 +2,7 @@ package com.example.Project.Controller;
 
 import com.example.Project.Models.Dev;
 import com.example.Project.Models.Marque;
+import com.example.Project.Models.Menu;
 import com.example.Project.Repositories.MarqueRepository;
 import com.example.Project.Services.MarqueServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,15 @@ public class MarqueController {
         // Set the ID of the updated Marque
         updatedMarque.setIdMarque(id);
         return marqueRepo.save(updatedMarque);
+    }
+    @GetMapping("/all")
+    public List<Marque> getAllMenus() {
+        return marqueRepo.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Marque finMarqueById(@PathVariable int id){
+        return marqueRepo.findById(id).get();
     }
 
 }

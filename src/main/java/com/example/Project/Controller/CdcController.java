@@ -1,6 +1,7 @@
 package com.example.Project.Controller;
 
 import com.example.Project.Models.CDC;
+import com.example.Project.Models.Ecu;
 import com.example.Project.Repositories.CDCRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,5 +26,10 @@ public class CdcController {
     @PostMapping("cretae")
     public CDC saveCdc(@RequestBody CDC cdc){
         return cdcRepository.save(cdc);
+    }
+
+    @GetMapping("/{id}")
+    public CDC getCdcById(@PathVariable int id){
+        return cdcRepository.findById(id).get();
     }
 }

@@ -50,4 +50,6 @@ public class CDC {
     @ManyToOne
     @JoinColumn(name = "`IdReverse`")
     private Reverse reverse;
+
+
 }

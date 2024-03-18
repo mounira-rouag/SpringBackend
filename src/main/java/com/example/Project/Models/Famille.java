@@ -1,5 +1,6 @@
 package com.example.Project.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,11 +20,11 @@ import java.util.List;
 public class Famille {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "`idFamille`")
+    @Column(name = "`IdFamille`")
     private int idFamille;
-    @Column(name = "`nomfamille`")
+    @Column(name = "`Nomfamille`")
     private String nomfamille;
-    @Column(name = "`description`")
+    @Column(name = "`Description`")
     private String description;
     @Column(name = "`Phrase`")
     private String phrase;
@@ -35,7 +36,7 @@ public class Famille {
     private boolean guidedMethFilter;
     @Column(name = "`SparePartsFilter`")
     private boolean sparePartsFilter;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "famille")
     private List<Ecu> ecu;
 

@@ -1,10 +1,13 @@
 package com.example.Project.Services;
 
+import com.example.Project.Models.PasswordResetToken;
 import com.example.Project.Models.User;
+import com.example.Project.Repositories.TokenRepository;
 import com.example.Project.Repositories.UserInterface;
 import com.example.Project.Request.ChangePasswordRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,11 +30,13 @@ public class UserServiceImpl {
     private final PasswordEncoder passwordEncoder;
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final TokenRepository tokenRepo;
 
-    public UserServiceImpl(UserInterface userInterface, PasswordEncoder passwordEncoder, UserDetailsServiceImpl userDetailsService) {
+    public UserServiceImpl(UserInterface userInterface, PasswordEncoder passwordEncoder, UserDetailsServiceImpl userDetailsService, TokenRepository tokenRepo) {
         this.userInterface = userInterface;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
+        this.tokenRepo = tokenRepo;
     }
 
     public User saveUser(User User) {
@@ -112,6 +117,17 @@ return userInterface.save(u);
                 .map(User::getEmail) // Extract email addresses using stream operations
                 .collect(Collectors.toList());
     }
+
+
+    public void createPasswordResetToken(User user, String token) {
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(token);
+        resetToken.setUser(user);
+        // Set expiration date and save the token
+        tokenRepo.save(resetToken);
+    }
+
+
 }
 
 

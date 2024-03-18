@@ -1,5 +1,6 @@
 package com.example.Project.Controller;
 
+import com.example.Project.Dto.Dto;
 import com.example.Project.Models.*;
 import com.example.Project.Repositories.*;
 import com.example.Project.Services.CDCServiceImpl;
@@ -42,10 +43,16 @@ private final MajRepository majRepo;
     }
 
     @PostMapping("dev/create")
-    public Dev createDev(@RequestBody Dev dev){
+    public Dev createDev(@RequestBody Dto creationdto){
+
+        return devServiceImpl.CreatDev(creationdto);
+    }
+    /**
+    @PostMapping("dev/add")
+    public Dev addDev(@RequestBody Dev dev){
 
         return devRepo.save(dev);
-    }
+    }*/
     @GetMapping("/dev/all")
     public List<Dev> getAllDevs() {
         return devRepo.findAll();
@@ -79,6 +86,7 @@ private final MajRepository majRepo;
     }*/
     @GetMapping("/dev/user/{iduser}")
     public List<Dev> getDevByUser(@PathVariable int iduser){
+
       User user =userRepo.getById(iduser);
       return  devRepo.getByUser(user);
 
@@ -87,9 +95,12 @@ private final MajRepository majRepo;
     public List<Dev> getDevByModel(@PathVariable int vehcode){
         Vehicule vehicule=vehiculeRepository.findByCodeVeh(vehcode);
         return devRepo.findByVehicules(vehicule);
-
-
-
     }
 
+    @GetMapping("/site/{site}")
+    public List<Dev> getDevsBySite(@PathVariable int site) {
+      return   devRepo.findByUser_Site(site);
     }
+
+
+}

@@ -1,12 +1,11 @@
 package com.example.Project.Controller;
 
+import com.example.Project.Dto.Dto;
+import com.example.Project.Models.Dev;
 import com.example.Project.Models.Maj;
 import com.example.Project.Models.Marque;
 import com.example.Project.Repositories.MajRepository;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
@@ -24,5 +23,13 @@ public class MAJController {
         return majRepo.findAll();
 }
 
+    @PostMapping("maj/creat")
+    public Maj createDev(@RequestBody Maj maj){
 
+        return majRepo.save(maj);
+    }
+    @GetMapping("/{id}")
+    public Maj finMajById(@PathVariable int id){
+        return majRepo.findById(id).get();
+    }
 }

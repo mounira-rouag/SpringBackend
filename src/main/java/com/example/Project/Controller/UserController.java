@@ -5,29 +5,42 @@ import com.example.Project.Models.User;
 import com.example.Project.Repositories.UserInterface;
 import com.example.Project.Request.ChangePasswordRequest;
 import com.example.Project.Request.MessageResponse;
+import com.example.Project.Request.ResetPasswordRequest;
+import com.example.Project.Services.ResetTokenServiceImpl;
+import com.example.Project.Services.SendingEmailService;
 import com.example.Project.Services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
     private final UserServiceImpl userServiceImp;
     private final UserInterface userRepository;
+    private final SendingEmailService senderEmailService;
+    private final ResetTokenServiceImpl resetTokenServiceImpl;
 
-    public UserController(UserServiceImpl userServiceImp, UserInterface userRepository, UserInterface userRepository1) {
+    public UserController(UserServiceImpl userServiceImp, UserInterface userRepository, UserInterface userRepository1, SendingEmailService senderEmailService, ResetTokenServiceImpl resetTokenServiceImpl) {
         this.userServiceImp = userServiceImp;
 
         this.userRepository = userRepository1;
+        this.senderEmailService = senderEmailService;
+        this.resetTokenServiceImpl = resetTokenServiceImpl;
     }
-
     @PatchMapping("/change-password")
     public ResponseEntity<?> changePassword(
             @RequestBody ChangePasswordRequest request,
@@ -40,6 +53,7 @@ public class UserController {
             return ResponseEntity.badRequest().body("Passwords do not match");
         }
     }
+
 
     @PostMapping("/findemail")
     public ResponseEntity<?> verifyEmail(@RequestParam String email) {
@@ -58,8 +72,6 @@ public class UserController {
         }
         return ResponseEntity.ok(emailList);
     }
-
-
     @PutMapping(value = "/updateuser/{id}")
     public ResponseEntity<?> updateuser(@RequestBody User user, @PathVariable int id) {
         userServiceImp.updateUser(user, id);
@@ -69,5 +81,44 @@ public class UserController {
     @GetMapping("/find-all")
     public List<User> getAllUsers() {
         return userRepository.findAllByProfile("rc");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam String email) {
+
+
+        if ((userRepository.findByEmail(email).isPresent())) {
+            Optional<User> user=userRepository.findByEmail(email);
+            String resetToken = generateResetToken(18);
+            userServiceImp.createPasswordResetToken(user.get(), resetToken);
+            senderEmailService.sendPasswordResetEmail(user.get().getEmail(), resetToken);
+            return ResponseEntity.ok().body(new MessageResponse("an email was sent chek you email"));
+        } else {
+            return ResponseEntity.badRequest().body(new MessageResponse("Email do not exist ,try again"));
+        }
+    }
+
+
+    @PostMapping("/reset-password/confirm")
+    public ResponseEntity<?> confirmResetPassword(@RequestParam String token,
+                                                  @RequestParam String newPassword,
+                                                  @RequestParam String ConfirmPassword) {
+
+        if (!newPassword.equals(ConfirmPassword)) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Passwords do not match."));
+        }
+        // Verify the token and initialize the password for the user
+        boolean success = resetTokenServiceImpl.resetPassword(token, newPassword);
+        if (success) {
+            return ResponseEntity.ok().body(new MessageResponse("Password reset successfully!"));
+        } else {
+            return ResponseEntity.badRequest().body(new MessageResponse("Invalid or expired token."));
+        }
+    }
+
+    private String generateResetToken(int length) {
+        byte[] randomBytes = new byte[length];
+        secureRandom.nextBytes(randomBytes);
+        return base64Encoder.encodeToString(randomBytes);
     }
 }

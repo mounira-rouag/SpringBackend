@@ -2,10 +2,7 @@ package com.example.Project.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -15,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@Data
 public class Ecu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +28,7 @@ public class Ecu {
     @OneToMany(mappedBy = "ecu")
     private List<Dev> dev;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "`IdFamille`")
     private Famille famille;

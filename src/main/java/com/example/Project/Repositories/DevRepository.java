@@ -11,6 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface DevRepository extends JpaRepository<Dev, Integer> {
+
+    List<Dev> findByUser_Site(int site);
     @Query("SELECT d FROM Dev d WHERE d.cdc.idCdc=:idCdc")
     List<Dev> findByCDC(@Param("idCdc") Integer idCdc);
 

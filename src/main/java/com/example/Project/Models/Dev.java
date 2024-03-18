@@ -36,21 +36,26 @@ public class Dev {
     @ManyToOne
     @JoinColumn(name = "`IdCDC`")
     private CDC cdc;
-    @JsonIgnore
+
+
     @ManyToOne
     @JoinColumn(name = "`IdEcu`")
     private Ecu ecu;
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "`IdMaj`")
     private Maj maj;
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "`IdEtatDev`")
     private EtatDev etatdev;
+
+    @ManyToOne
+    @JoinColumn(name = "`IdMenu`")
+    private Menu menu;
+
     @JsonIgnore
     @ManyToOne
-
     @JoinColumn(name = "`IdRC`")
     private User user;
     @JsonIgnore
@@ -63,4 +68,6 @@ public class Dev {
                                 }
     )
     private List<Vehicule> vehicules;
+
+
 }

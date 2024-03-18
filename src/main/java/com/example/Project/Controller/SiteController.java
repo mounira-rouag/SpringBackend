@@ -24,8 +24,19 @@ public class SiteController {
         return sitesRepository.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public Sites saveSite(@RequestBody Sites sites){
         return sitesRepository.save(sites);
     }
+
+    @DeleteMapping("/delete")
+    public void deletSite(@PathVariable int id){
+       sitesRepository.deleteById(id);
+    }
+
+    @GetMapping("/{id}")
+    public Sites getSiteById(@PathVariable int id){
+       return sitesRepository.findById(id).get();
+    }
+
 }
