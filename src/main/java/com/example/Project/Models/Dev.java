@@ -54,12 +54,11 @@ public class Dev {
     @JoinColumn(name = "`IdMenu`")
     private Menu menu;
 
-    @JsonIgnore
+@JsonIgnore
     @ManyToOne
     @JoinColumn(name = "`IdRC`")
     private User user;
 
-    @JsonIgnore
     @ManyToMany
     @JoinTable(  name = "`VEH_BY_DEV`",
             joinColumns = @JoinColumn(name = "`IdDev`"),

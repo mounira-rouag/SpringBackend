@@ -55,5 +55,7 @@ import java.util.Set;
         this.site=site;
     }
 
+    @OneToMany(mappedBy = "user")
+    private List<Dev> dev;
 
 }

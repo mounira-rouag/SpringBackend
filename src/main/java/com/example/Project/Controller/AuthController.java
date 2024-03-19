@@ -88,14 +88,15 @@ public class AuthController {
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
         // Perform password validation
-
+        /**
+        if (!userServiceImpl.validateEmailForDomain(signUpRequest.getEmail())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("domaine name not supported "));
+        }*/
         if (!userServiceImpl.validatePassword(signUpRequest.getPassword())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Password does not meet security requirements"));
         }
 
-        if (!userServiceImpl.validateEmailForDomain(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("domaine name not supported "));
-        }
+
 
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
